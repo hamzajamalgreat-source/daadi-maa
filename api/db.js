@@ -1,30 +1,27 @@
-const initSqlJs = require('sql.js');
-const bcrypt    = require('bcryptjs');
-const path      = require('path');
-const fs        = require('fs');
+// Use better-sqlite3 which works on Vercel with Node 18+
+// On Vercel the DB lives in /tmp (writable, resets on cold start but auto-reseeds)
+const Database = require('better-sqlite3');
+const bcrypt   = require('bcryptjs');
+const path     = require('path');
+const fs       = require('fs');
 
-// On Vercel, /tmp is the only writable directory.
-// On local dev, use the project directory.
 const DB_PATH = process.env.VERCEL
   ? '/tmp/daadi_maa.db'
   : path.join(__dirname, '..', 'daadi_maa.db');
 
 let db = null;
 
-async function initDb() {
-  const SQL = await initSqlJs();
+function getDb() {
+  if (db) return db;
+  db = new Database(DB_PATH);
+  db.pragma('journal_mode = WAL');
+  return db;
+}
 
-  if (fs.existsSync(DB_PATH)) {
-    const buffer = fs.readFileSync(DB_PATH);
-    db = new SQL.Database(buffer);
-  } else {
-    db = new SQL.Database();
-  }
+function initDb() {
+  const d = getDb();
 
-  db.run('PRAGMA journal_mode = WAL');
-
-  // ─── Tables ──────────────────────────────────────────────────────────────────
-  db.exec(`
+  d.exec(`
     CREATE TABLE IF NOT EXISTS admins (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
@@ -73,104 +70,67 @@ async function initDb() {
     );
   `);
 
-  // ─── Seed admin ───────────────────────────────────────────────────────────────
-  const adminCheck = db.exec("SELECT id FROM admins WHERE username='admin'");
-  if (!adminCheck.length || !adminCheck[0].values.length) {
+  // Seed admin
+  const adminExists = d.prepare("SELECT id FROM admins WHERE username='admin'").get();
+  if (!adminExists) {
     const hashed = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10);
-    db.run('INSERT INTO admins (username, password) VALUES (?, ?)', ['admin', hashed]);
+    d.prepare('INSERT INTO admins (username,password) VALUES (?,?)').run('admin', hashed);
   }
 
-  // ─── Seed categories ──────────────────────────────────────────────────────────
-  const categories = [
-    { name: 'Recipe Mixes',    slug: 'recipe-mixes'    },
-    { name: 'Spice Powders',   slug: 'spice-powders'   },
-    { name: 'Salts',           slug: 'salts'           },
-    { name: 'Whole Spices',    slug: 'whole-spices'    },
-    { name: 'Chilli Products', slug: 'chilli-products' },
-    { name: 'Biryani & Pulao', slug: 'biryani-pulao'   },
-    { name: 'BBQ & Grill',     slug: 'bbq-grill'       },
-    { name: 'Blended Masalas', slug: 'blended-masalas' },
-    { name: 'Curry Bases',     slug: 'curry-bases'     },
-    { name: 'Gift Packs',      slug: 'gift-packs'      },
+  // Seed categories
+  const cats = [
+    ['Recipe Mixes','recipe-mixes'], ['Spice Powders','spice-powders'],
+    ['Salts','salts'], ['Whole Spices','whole-spices'],
+    ['Chilli Products','chilli-products'], ['Biryani & Pulao','biryani-pulao'],
+    ['BBQ & Grill','bbq-grill'], ['Blended Masalas','blended-masalas'],
+    ['Curry Bases','curry-bases'], ['Gift Packs','gift-packs'],
   ];
-  categories.forEach(c => {
-    db.run('INSERT OR IGNORE INTO categories (name, slug) VALUES (?, ?)', [c.name, c.slug]);
-  });
+  const insertCat = d.prepare('INSERT OR IGNORE INTO categories (name,slug) VALUES (?,?)');
+  cats.forEach(([name,slug]) => insertCat.run(name,slug));
 
-  // ─── Seed products ────────────────────────────────────────────────────────────
-  const getCatId = slug => {
-    const r = db.exec(`SELECT id FROM categories WHERE slug='${slug}'`);
-    return r.length && r[0].values.length ? r[0].values[0][0] : null;
-  };
-
-  const rId = getCatId('recipe-mixes');
-  const sId = getCatId('spice-powders');
-  const aId = getCatId('salts');
+  // Seed products
+  const getC = slug => d.prepare('SELECT id FROM categories WHERE slug=?').get(slug)?.id;
+  const rId = getC('recipe-mixes'), sId = getC('spice-powders'), aId = getC('salts');
 
   const products = [
-    { name:'Quorma Mix',                 slug:'quorma-mix',                description:'Authentic Quorma recipe mix crafted with premium whole spices for a rich, aromatic curry. 100% organic.',          price:120, image_url:'/images/quorma-mix.jpg',         category_id:rId, badge:'Bestseller' },
-    { name:'Achar Gosht Masala',         slug:'achar-gosht-masala',        description:'Tangy and spicy pickling spice blend for Achar Gosht. Gives your meat curry a bold, pickled flavour.',            price:120, image_url:'/images/achar-gosht.jpg',         category_id:rId, badge:null },
-    { name:'Kabuli Pulao Masala',        slug:'kabuli-pulao-masala',       description:'Fragrant masala mix for the classic Kabuli Pulao — the pride of Peshawari cuisine.',                              price:120, image_url:'/images/kabuli-pulao.jpg',        category_id:rId, badge:null },
-    { name:'Bombay Biryani Masala',      slug:'bombay-biryani-masala',     description:'Signature Bombay-style biryani spice blend that delivers layers of deep, complex flavour.',                       price:120, image_url:'/images/bombay-biryani.jpg',      category_id:rId, badge:'Popular' },
-    { name:'Tikka Boti Powder',          slug:'tikka-boti-powder',         description:'Perfect marinade spice powder for grilled tikka and boti. Gives that smoky, charred flavour.',                    price:20,  image_url:'/images/tikka-boti.jpg',          category_id:sId, badge:null },
-    { name:'Fish Masala Powder',         slug:'fish-masala-powder',        description:'A zesty blend of coastal spices specifically balanced for fish and seafood dishes.',                               price:20,  image_url:'/images/fish-masala.jpg',         category_id:sId, badge:null },
-    { name:'Peshawari Chatpatta Masala', slug:'peshawari-chatpatta-masala',description:'The iconic tangy chaat masala from Peshawar. Sprinkle on fruits, salads, and snacks.',                            price:20,  image_url:'/images/chatpatta-masala.jpg',    category_id:sId, badge:'Regional Special' },
-    { name:'Curry Powder',               slug:'curry-powder',              description:'A versatile, balanced curry powder blend for everyday cooking.',                                                   price:20,  image_url:'/images/curry-powder.jpg',        category_id:sId, badge:null },
-    { name:'Garam Masala Powder',        slug:'garam-masala-powder',       description:'A warming blend of whole spices ground to perfection — the finishing touch for any dish.',                        price:20,  image_url:'/images/garam-masala.jpg',        category_id:sId, badge:null },
-    { name:'Black Pepper Powder',        slug:'black-pepper-powder',       description:'Finely ground premium black pepper with a sharp, pungent bite. Essential in every kitchen.',                      price:20,  image_url:'/images/black-pepper.jpg',        category_id:sId, badge:null },
-    { name:'Red Chilli Powder',          slug:'red-chilli-powder',         description:'Vibrant red chilli powder from sun-dried chillis. Rich colour and bold heat.',                                    price:20,  image_url:'/images/red-chilli-powder.jpg',   category_id:sId, badge:null },
-    { name:'Red Chilli Flakes',          slug:'red-chilli-flakes',         description:'Coarsely crushed red chilli flakes. Great on pizza, pasta, and as a table condiment.',                            price:20,  image_url:'/images/red-chilli-flakes.jpg',   category_id:sId, badge:null },
-    { name:'Coriander Powder',           slug:'coriander-powder',          description:'Freshly milled coriander seed powder with a citrusy, earthy aroma. A curry staple.',                             price:20,  image_url:'/images/coriander-powder.jpg',    category_id:sId, badge:null },
-    { name:'Turmeric Powder',            slug:'turmeric-powder',           description:'Pure turmeric powder with a high curcumin content — bright colour and earthy flavour.',                           price:20,  image_url:'/images/turmeric-powder.jpg',     category_id:sId, badge:null },
-    { name:'Iodized Salt',               slug:'iodized-salt',              description:'Himalayan iodized salt with essential minerals. Clean, pure flavour for everyday use.',                           price:20,  image_url:'/images/iodized-salt.jpg',        category_id:aId, badge:null },
-    { name:'Pure Refined Salt',          slug:'pure-refined-salt',         description:'Fine-grain pure refined Himalayan salt. Consistent texture, ideal for baking and cooking.',                       price:20,  image_url:'/images/pure-refined-salt.jpg',   category_id:aId, badge:null },
-    { name:'Himalayan Pink Salt',        slug:'himalayan-pink-salt',       description:'Naturally mined Himalayan pink salt rich in trace minerals. A premium table salt.',                               price:20,  image_url:'/images/himalayan-pink-salt.jpg', category_id:aId, badge:'Premium' },
+    ['Quorma Mix','quorma-mix','Authentic Quorma recipe mix crafted with premium whole spices.',120,'/images/quorma-mix.jpg',rId,'Bestseller'],
+    ['Achar Gosht Masala','achar-gosht-masala','Tangy pickling spice blend for Achar Gosht.',120,'/images/achar-gosht.jpg',rId,null],
+    ['Kabuli Pulao Masala','kabuli-pulao-masala','Fragrant masala for the classic Kabuli Pulao.',120,'/images/kabuli-pulao.jpg',rId,null],
+    ['Bombay Biryani Masala','bombay-biryani-masala','Signature Bombay-style biryani spice blend.',120,'/images/bombay-biryani.jpg',rId,'Popular'],
+    ['Tikka Boti Powder','tikka-boti-powder','Perfect marinade powder for grilled tikka and boti.',20,'/images/tikka-boti.jpg',sId,null],
+    ['Fish Masala Powder','fish-masala-powder','Zesty blend balanced for fish and seafood.',20,'/images/fish-masala.jpg',sId,null],
+    ['Peshawari Chatpatta Masala','peshawari-chatpatta-masala','Iconic tangy chaat masala from Peshawar.',20,'/images/chatpatta-masala.jpg',sId,'Regional Special'],
+    ['Curry Powder','curry-powder','Versatile curry powder for everyday cooking.',20,'/images/curry-powder.jpg',sId,null],
+    ['Garam Masala Powder','garam-masala-powder','Warming blend of whole spices ground to perfection.',20,'/images/garam-masala.jpg',sId,null],
+    ['Black Pepper Powder','black-pepper-powder','Finely ground premium black pepper.',20,'/images/black-pepper.jpg',sId,null],
+    ['Red Chilli Powder','red-chilli-powder','Vibrant red chilli powder. Rich colour and bold heat.',20,'/images/red-chilli-powder.jpg',sId,null],
+    ['Red Chilli Flakes','red-chilli-flakes','Coarsely crushed red chilli flakes.',20,'/images/red-chilli-flakes.jpg',sId,null],
+    ['Coriander Powder','coriander-powder','Freshly milled coriander seed powder.',20,'/images/coriander-powder.jpg',sId,null],
+    ['Turmeric Powder','turmeric-powder','Pure turmeric powder with high curcumin content.',20,'/images/turmeric-powder.jpg',sId,null],
+    ['Iodized Salt','iodized-salt','Himalayan iodized salt with essential minerals.',20,'/images/iodized-salt.jpg',aId,null],
+    ['Pure Refined Salt','pure-refined-salt','Fine-grain pure refined Himalayan salt.',20,'/images/pure-refined-salt.jpg',aId,null],
+    ['Himalayan Pink Salt','himalayan-pink-salt','Naturally mined Himalayan pink salt.',20,'/images/himalayan-pink-salt.jpg',aId,'Premium'],
   ];
+  const insertP = d.prepare('INSERT OR IGNORE INTO products (name,slug,description,price,image_url,category_id,badge) VALUES (?,?,?,?,?,?,?)');
+  products.forEach(p => insertP.run(...p));
 
-  products.forEach(p => {
-    db.run(
-      'INSERT OR IGNORE INTO products (name,slug,description,price,image_url,category_id,badge) VALUES (?,?,?,?,?,?,?)',
-      [p.name, p.slug, p.description, p.price, p.image_url, p.category_id, p.badge]
-    );
-  });
-
-  saveDb();
   console.log('✅ DB ready');
-  return db;
+  return d;
 }
 
-function saveDb() {
-  if (!db) return;
-  try {
-    const data   = db.export();
-    const buffer = Buffer.from(data);
-    fs.writeFileSync(DB_PATH, buffer);
-  } catch (err) {
-    console.error('DB save error:', err.message);
-  }
+function queryAll(sql, params=[]) {
+  return getDb().prepare(sql).all(...params);
 }
 
-function queryAll(sql, params = []) {
-  const stmt    = db.prepare(sql);
-  if (params.length) stmt.bind(params);
-  const results = [];
-  while (stmt.step()) results.push(stmt.getAsObject());
-  stmt.free();
-  return results;
+function queryOne(sql, params=[]) {
+  return getDb().prepare(sql).get(...params) || null;
 }
 
-function queryOne(sql, params = []) {
-  const results = queryAll(sql, params);
-  return results[0] || null;
+function runSql(sql, params=[]) {
+  const result = getDb().prepare(sql).run(...params);
+  return { lastInsertRowid: result.lastInsertRowid, changes: result.changes };
 }
 
-function runSql(sql, params = []) {
-  db.run(sql, params);
-  saveDb();
-  return {
-    lastInsertRowid: db.exec('SELECT last_insert_rowid()')[0]?.values[0]?.[0],
-    changes:         db.getRowsModified(),
-  };
-}
+function saveDb() { /* better-sqlite3 writes synchronously, no manual save needed */ }
 
-module.exports = { initDb, queryAll, queryOne, runSql, saveDb, getDb: () => db };
+module.exports = { initDb, queryAll, queryOne, runSql, saveDb, getDb };

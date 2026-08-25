@@ -6,8 +6,10 @@ const { requireAuth } = require('./auth');
 
 const router = express.Router();
 
-// Ensure upload directory exists
-const UPLOAD_DIR = path.join(__dirname, '..', 'public', 'images');
+// On Vercel, use /tmp for uploads (only writable directory)
+const UPLOAD_DIR = process.env.VERCEL
+  ? '/tmp/images'
+  : path.join(__dirname, '..', '..', 'public', 'images');
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }

@@ -15,9 +15,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // ─── Routes (lazy-loaded after DB is ready) ───────────────────────────────────
 let dbReady = false;
 
-app.use(async (req, res, next) => {
+app.use((req, res, next) => {
   if (!dbReady) {
-    await initDb();
+    initDb();
     dbReady = true;
   }
   next();
