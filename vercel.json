@@ -32,8 +32,20 @@
       "dest": "/public/placeholder-spice.svg"
     },
     {
-      "src": "/(.*)",
+      "src": "/assets/(.*)",
+      "dest": "/frontend/assets/$1"
+    },
+    {
+      "src": "/favicon.svg",
+      "dest": "/frontend/favicon.svg"
+    },
+    {
+      "src": "/(.*\\.(js|css|ico|png|svg|jpg|jpeg|gif|webp|woff|woff2|ttf|map))",
       "dest": "/frontend/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/index.html"
     }
   ]
 }
