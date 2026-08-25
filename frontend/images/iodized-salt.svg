@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380">
+  <rect width="300" height="380" fill="#F5F5F5"/>
+  <path d="M65 60 Q60 50 80 45 L220 45 Q240 50 235 60 L245 200 L55 200 Z" fill="#1A1A1A"/>
+  <path d="M55 200 L245 200 L245 300 Q248 330 220 340 L80 340 Q52 330 55 300 Z" fill="#F8F8F8"/>
+  <rect x="65" y="42" width="170" height="20" rx="4" fill="#080808"/>
+  <circle cx="150" cy="95" r="28" fill="white" opacity="0.95"/>
+  <circle cx="150" cy="95" r="26" fill="#8B1A1A"/>
+  <text x="150" y="92" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="bold" font-style="italic" fill="#FFD700">Daadi</text>
+  <text x="150" y="104" text-anchor="middle" font-family="Georgia,serif" font-size="8" font-style="italic" fill="#FFD700">maa</text>
+  <text x="150" y="148" text-anchor="middle" font-family="Arial" font-size="11" fill="white">آیوڈین ملانک</text>
+  <text x="150" y="182" text-anchor="middle" font-family="Arial" font-size="24" font-weight="900" fill="white">IODIZED</text>
+  <text x="150" y="210" text-anchor="middle" font-family="Arial" font-size="28" font-weight="900" fill="#D4A843">SALT</text>
+  <!-- Salt bowl — white crystals -->
+  <ellipse cx="150" cy="286" rx="58" ry="46" fill="#111111"/>
+  <ellipse cx="150" cy="290" rx="48" ry="36" fill="#8B6914"/>
+  <ellipse cx="150" cy="285" rx="42" ry="30" fill="#E8E8E8"/>
+  <!-- Salt crystals -->
+  <rect x="124" y="276" width="6" height="6" rx="1" fill="white" opacity="0.9"/>
+  <rect x="136" y="271" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+  <rect x="150" y="273" width="7" height="7" rx="1" fill="white"/>
+  <rect x="163" y="275" width="5" height="5" rx="1" fill="white" opacity="0.9"/>
+  <rect x="174" y="279" width="6" height="6" rx="1" fill="white" opacity="0.7"/>
+  <!-- HIMALAYAN SALT label on side -->
+  <text x="220" y="305" text-anchor="middle" font-family="Arial" font-size="7" fill="#666" transform="rotate(90,220,305)" letter-spacing="1">HIMALAYAN SALT</text>
+  <rect x="192" y="332" width="50" height="20" rx="4" fill="#8B1A1A"/>
+  <text x="217" y="346" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="white">Rs. 20</text>
+</svg>

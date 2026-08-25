@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380">
+  <rect width="300" height="380" fill="#FFF5F5"/>
+  <path d="M65 60 Q60 50 80 45 L220 45 Q240 50 235 60 L245 200 L55 200 Z" fill="#8B1A1A"/>
+  <path d="M55 200 L245 200 L245 300 Q248 330 220 340 L80 340 Q52 330 55 300 Z" fill="#FAF5F5"/>
+  <rect x="65" y="42" width="170" height="20" rx="4" fill="#6A0A0A"/>
+  <circle cx="150" cy="95" r="28" fill="white" opacity="0.95"/>
+  <circle cx="150" cy="95" r="26" fill="#8B1A1A"/>
+  <text x="150" y="92" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="bold" font-style="italic" fill="#FFD700">Daadi</text>
+  <text x="150" y="104" text-anchor="middle" font-family="Georgia,serif" font-size="8" font-style="italic" fill="#FFD700">maa</text>
+  <text x="150" y="148" text-anchor="middle" font-family="Arial" font-size="11" fill="white">کٹی ہوئی مرچ</text>
+  <text x="150" y="182" text-anchor="middle" font-family="Arial" font-size="22" font-weight="900" fill="white">RED CHILLI</text>
+  <text x="150" y="208" text-anchor="middle" font-family="Arial" font-size="22" font-weight="900" fill="#D4A843">FLAKES</text>
+  <!-- Chilli flakes bowl -->
+  <ellipse cx="150" cy="286" rx="58" ry="46" fill="#6A0A0A"/>
+  <ellipse cx="150" cy="290" rx="48" ry="36" fill="#8B6914"/>
+  <ellipse cx="150" cy="285" rx="42" ry="30" fill="#8B1A1A"/>
+  <!-- Flakes texture -->
+  <rect x="118" y="275" width="8" height="4" rx="2" fill="#FF4444" transform="rotate(-30,122,277)"/>
+  <rect x="132" y="268" width="7" height="3" rx="1.5" fill="#CC1A1A" transform="rotate(15,135,269)"/>
+  <rect x="148" y="272" width="9" height="4" rx="2" fill="#FF4444" transform="rotate(-10,152,274)"/>
+  <rect x="162" y="270" width="7" height="3" rx="1.5" fill="#FF6666" transform="rotate(25,165,271)"/>
+  <rect x="138" y="282" width="8" height="4" rx="2" fill="#CC1A1A" transform="rotate(-20,142,284)"/>
+  <rect x="155" y="280" width="7" height="3" rx="1.5" fill="#FF4444" transform="rotate(10,158,281)"/>
+  <!-- Red chillies beside bowl -->
+  <path d="M95 278 Q108 260 118 272" fill="none" stroke="#CC0000" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="95" cy="278" r="4" fill="#CC0000"/>
+  <rect x="192" y="332" width="50" height="20" rx="4" fill="#8B1A1A"/>
+  <text x="217" y="346" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="white">Rs. 20</text>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380">
+  <rect width="300" height="380" fill="#F8F5F2"/>
+  <path d="M65 60 Q60 50 80 45 L220 45 Q240 50 235 60 L245 200 L55 200 Z" fill="#C8A882"/>
+  <path d="M55 200 L245 200 L245 300 Q248 330 220 340 L80 340 Q52 330 55 300 Z" fill="#FAF5F0"/>
+  <rect x="65" y="42" width="170" height="20" rx="4" fill="#A08060"/>
+  <circle cx="150" cy="95" r="28" fill="white" opacity="0.95"/>
+  <circle cx="150" cy="95" r="26" fill="#8B1A1A"/>
+  <text x="150" y="92" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="bold" font-style="italic" fill="#FFD700">Daadi</text>
+  <text x="150" y="104" text-anchor="middle" font-family="Georgia,serif" font-size="8" font-style="italic" fill="#FFD700">maa</text>
+  <text x="150" y="148" text-anchor="middle" font-family="Arial" font-size="11" fill="#2D1810">گرم مصالحہ پاؤڈر</text>
+  <text x="150" y="182" text-anchor="middle" font-family="Arial" font-size="22" font-weight="900" fill="#2D1810">GARAM MASALA</text>
+  <text x="150" y="208" text-anchor="middle" font-family="Arial" font-size="22" font-weight="900" fill="#8B1A1A">POWDER</text>
+  <!-- Spice powder bowl -->
+  <ellipse cx="150" cy="285" rx="58" ry="46" fill="#A08060"/>
+  <ellipse cx="150" cy="290" rx="48" ry="36" fill="#8B6914"/>
+  <ellipse cx="150" cy="285" rx="40" ry="26" fill="#A0784A"/>
+  <!-- Powder mound -->
+  <ellipse cx="150" cy="280" rx="32" ry="16" fill="#C8A050"/>
+  <!-- Whole spices scattered -->
+  <circle cx="118" cy="292" r="5" fill="#3D2B1A"/>
+  <circle cx="182" cy="290" r="4" fill="#3D2B1A"/>
+  <circle cx="135" cy="300" r="3" fill="#8B0000"/>
+  <path d="M158 298 Q165 290 172 298" fill="none" stroke="#8B6914" stroke-width="2"/>
+  <!-- Garlic bulb -->
+  <ellipse cx="185" cy="276" rx="9" ry="7" fill="#FAFAFA"/>
+  <path d="M180 272 Q185 266 190 272" fill="#F0F0E0"/>
+  <rect x="192" y="332" width="50" height="20" rx="4" fill="#8B1A1A"/>
+  <text x="217" y="346" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="white">Rs. 20</text>
+</svg>

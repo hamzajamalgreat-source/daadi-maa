@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 280" fill="none">
+  <!-- Outer gold decorative ring with ornamental dots -->
+  <circle cx="120" cy="108" r="72" fill="none" stroke="#D4A843" stroke-width="3" stroke-dasharray="4 3"/>
+  
+  <!-- Main red shield/badge shape -->
+  <path d="M75 55 Q75 40 120 38 Q165 40 165 55 L165 125 Q165 160 120 175 Q75 160 75 125 Z" fill="#8B1A1A"/>
+  <!-- Inner shield highlight -->
+  <path d="M82 60 Q82 48 120 46 Q158 48 158 60 L158 122 Q158 153 120 167 Q82 153 82 122 Z" fill="#A52A2A"/>
+  
+  <!-- White portrait circle -->
+  <circle cx="120" cy="100" r="44" fill="#FEFEFE"/>
+  <circle cx="120" cy="100" r="42" fill="#FDF5E8"/>
+  
+  <!-- Silver/grey hair -->
+  <ellipse cx="120" cy="72" rx="28" ry="16" fill="#BEBEBE"/>
+  <ellipse cx="94" cy="84" rx="10" ry="18" fill="#BEBEBE"/>
+  <ellipse cx="146" cy="84" rx="10" ry="18" fill="#BEBEBE"/>
+  <ellipse cx="120" cy="70" rx="22" ry="10" fill="#D0D0D0"/>
+  
+  <!-- Face -->
+  <ellipse cx="120" cy="102" rx="24" ry="28" fill="#F2C882"/>
+  
+  <!-- Collar white -->
+  <ellipse cx="120" cy="128" rx="18" ry="8" fill="#FEFEFE"/>
+  <path d="M102 124 Q120 132 138 124 L140 136 Q120 142 100 136 Z" fill="#FEFEFE"/>
+  
+  <!-- Glasses -->
+  <rect x="103" y="95" width="13" height="9" rx="4" fill="none" stroke="#3D2B1A" stroke-width="1.8"/>
+  <rect x="123" y="95" width="13" height="9" rx="4" fill="none" stroke="#3D2B1A" stroke-width="1.8"/>
+  <line x1="116" y1="99" x2="123" y2="99" stroke="#3D2B1A" stroke-width="1.5"/>
+  <line x1="103" y1="99" x2="97" y2="97" stroke="#3D2B1A" stroke-width="1.5"/>
+  <line x1="136" y1="99" x2="142" y2="97" stroke="#3D2B1A" stroke-width="1.5"/>
+  
+  <!-- Eyes -->
+  <circle cx="109" cy="99" r="2.5" fill="#3D2B1A"/>
+  <circle cx="129" cy="99" r="2.5" fill="#3D2B1A"/>
+  <circle cx="110" cy="98" r="0.8" fill="white"/>
+  <circle cx="130" cy="98" r="0.8" fill="white"/>
+  
+  <!-- Nose -->
+  <ellipse cx="120" cy="108" rx="3" ry="2.5" fill="#D4A055"/>
+  
+  <!-- Smile wrinkles -->
+  <path d="M110 116 Q120 122 130 116" stroke="#C07830" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  
+  <!-- Rosy cheeks -->
+  <circle cx="100" cy="110" r="6" fill="#F08060" opacity="0.25"/>
+  <circle cx="140" cy="110" r="6" fill="#F08060" opacity="0.25"/>
+
+  <!-- Gold top ornament / hanging loop -->
+  <ellipse cx="120" cy="38" rx="8" ry="5" fill="none" stroke="#D4A843" stroke-width="2.5"/>
+  <line x1="120" y1="33" x2="120" y2="20" stroke="#D4A843" stroke-width="2.5"/>
+  <circle cx="120" cy="17" r="4" fill="#D4A843"/>
+  
+  <!-- Gold decorative side swirls on shield -->
+  <path d="M75 80 Q62 80 62 95 Q62 105 72 105" fill="none" stroke="#D4A843" stroke-width="2"/>
+  <path d="M165 80 Q178 80 178 95 Q178 105 168 105" fill="none" stroke="#D4A843" stroke-width="2"/>
+  <circle cx="62" cy="95" r="3" fill="#D4A843"/>
+  <circle cx="178" cy="95" r="3" fill="#D4A843"/>
+
+  <!-- Gold ribbon banner -->
+  <path d="M48 168 L72 158 L168 158 L192 168 L168 178 L72 178 Z" fill="#D4A843"/>
+  <!-- Ribbon tails -->
+  <path d="M48 168 L58 163 L58 173 Z" fill="#B8892A"/>
+  <path d="M192 168 L182 163 L182 173 Z" fill="#B8892A"/>
+  <!-- Ribbon shadow line -->
+  <line x1="72" y1="168" x2="168" y2="168" stroke="#B8892A" stroke-width="0.8" opacity="0.5"/>
+  
+  <!-- "Daadi" script in banner -->
+  <text x="120" y="171" text-anchor="middle" 
+        font-family="Georgia, 'Times New Roman', serif" 
+        font-size="16" font-weight="bold" font-style="italic" 
+        fill="#2D1810" letter-spacing="0.5">Daadi</text>
+  
+  <!-- Red oval below ribbon -->
+  <ellipse cx="120" cy="198" rx="52" ry="22" fill="#8B1A1A"/>
+  <ellipse cx="120" cy="198" rx="49" ry="19" fill="#9B2020"/>
+  
+  <!-- "maa" text in red oval -->
+  <text x="120" y="204" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="18" font-weight="bold" font-style="italic"
+        fill="#FFD700" letter-spacing="2">maa</text>
+  
+  <!-- "Natural, Pure, Safe" tagline -->
+  <text x="120" y="234" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="9" font-style="italic"
+        fill="#5A3A1A" letter-spacing="0.5">Natural, Pure, Safe</text>
+  
+  <!-- Bottom gold ornament dots -->
+  <circle cx="90" cy="246" r="2" fill="#D4A843"/>
+  <circle cx="120" cy="250" r="2.5" fill="#D4A843"/>
+  <circle cx="150" cy="246" r="2" fill="#D4A843"/>
+</svg>
