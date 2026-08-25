@@ -1,9 +1,9 @@
-// Uses sql.js ASM build — pure JavaScript, no .wasm file needed.
-// Works on Vercel serverless without any native compilation.
-const SQL    = require('sql.js/dist/sql-asm.js');
-const bcrypt = require('bcryptjs');
-const path   = require('path');
-const fs     = require('fs');
+// sql-asm.js — pure JavaScript SQLite, no native deps, no .wasm file.
+// SQL() returns a Promise, so initDb() is async.
+const sqlInit = require('sql.js/dist/sql-asm.js');
+const bcrypt  = require('bcryptjs');
+const path    = require('path');
+const fs      = require('fs');
 
 const DB_PATH = process.env.VERCEL
   ? '/tmp/daadi_maa.db'
@@ -11,19 +11,21 @@ const DB_PATH = process.env.VERCEL
 
 let db = null;
 
-function initDb() {
-  // sql-asm.js is synchronous (no wasm, pure JS asm.js)
-  const SqlEngine = SQL();
+async function initDb() {
+  if (db) return db; // already initialised
+
+  // sql-asm.js is async — must await
+  const SQL = await sqlInit();
 
   if (fs.existsSync(DB_PATH)) {
     try {
       const buf = fs.readFileSync(DB_PATH);
-      db = new SqlEngine.Database(buf);
+      db = new SQL.Database(buf);
     } catch {
-      db = new SqlEngine.Database();
+      db = new SQL.Database();
     }
   } else {
-    db = new SqlEngine.Database();
+    db = new SQL.Database();
   }
 
   // ─── Tables ────────────────────────────────────────────────────────────────
@@ -86,14 +88,14 @@ function initDb() {
   // ─── Seed categories ────────────────────────────────────────────────────────
   const cats = [
     ['Recipe Mixes','recipe-mixes'], ['Spice Powders','spice-powders'],
-    ['Salts','salts'], ['Whole Spices','whole-spices'],
+    ['Salts','salts'],               ['Whole Spices','whole-spices'],
     ['Chilli Products','chilli-products'], ['Biryani & Pulao','biryani-pulao'],
-    ['BBQ & Grill','bbq-grill'], ['Blended Masalas','blended-masalas'],
-    ['Curry Bases','curry-bases'], ['Gift Packs','gift-packs'],
+    ['BBQ & Grill','bbq-grill'],     ['Blended Masalas','blended-masalas'],
+    ['Curry Bases','curry-bases'],   ['Gift Packs','gift-packs'],
   ];
-  cats.forEach(([name, slug]) => {
-    db.run('INSERT OR IGNORE INTO categories (name,slug) VALUES (?,?)', [name, slug]);
-  });
+  cats.forEach(([name, slug]) =>
+    db.run('INSERT OR IGNORE INTO categories (name,slug) VALUES (?,?)', [name, slug])
+  );
 
   // ─── Seed products ──────────────────────────────────────────────────────────
   const getC = slug => {
@@ -123,36 +125,34 @@ function initDb() {
     ['Pure Refined Salt','pure-refined-salt','Fine-grain pure refined Himalayan salt.',20,'/images/pure-refined-salt.jpg',aId,null],
     ['Himalayan Pink Salt','himalayan-pink-salt','Naturally mined Himalayan pink salt.',20,'/images/himalayan-pink-salt.jpg',aId,'Premium'],
   ];
-
-  products.forEach(p => {
+  products.forEach(p =>
     db.run(
       'INSERT OR IGNORE INTO products (name,slug,description,price,image_url,category_id,badge) VALUES (?,?,?,?,?,?,?)',
       p
-    );
-  });
+    )
+  );
 
   saveDb();
-  console.log('✅ DB ready');
+  console.log('✅ DB ready at', DB_PATH);
   return db;
 }
 
 function saveDb() {
   if (!db) return;
   try {
-    const data = db.export();
-    fs.writeFileSync(DB_PATH, Buffer.from(data));
+    fs.writeFileSync(DB_PATH, Buffer.from(db.export()));
   } catch (e) {
     console.error('DB save error:', e.message);
   }
 }
 
 function queryAll(sql, params = []) {
-  const stmt    = db.prepare(sql);
+  const stmt = db.prepare(sql);
   if (params.length) stmt.bind(params);
-  const results = [];
-  while (stmt.step()) results.push(stmt.getAsObject());
+  const rows = [];
+  while (stmt.step()) rows.push(stmt.getAsObject());
   stmt.free();
-  return results;
+  return rows;
 }
 
 function queryOne(sql, params = []) {

@@ -15,14 +15,14 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // ─── Routes (lazy-loaded after DB is ready) ───────────────────────────────────
 let dbReady = false;
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   if (!dbReady) {
     try {
-      initDb();
+      await initDb();
       dbReady = true;
     } catch (err) {
       console.error('DB init error:', err);
-      return res.status(500).json({ error: 'Database initialization failed: ' + err.message });
+      return res.status(500).json({ error: 'Database failed: ' + err.message });
     }
   }
   next();
