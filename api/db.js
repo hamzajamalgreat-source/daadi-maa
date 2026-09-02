@@ -1,4 +1,4 @@
-// sql-asm.js — pure JavaScript SQLite, no native deps, no .wasm file.
+﻿// sql-asm.js â€” pure JavaScript SQLite, no native deps, no .wasm file.
 // SQL() returns a Promise, so initDb() is async.
 const sqlInit = require('sql.js/dist/sql-asm.js');
 const bcrypt  = require('bcryptjs');
@@ -14,7 +14,7 @@ let db = null;
 async function initDb() {
   if (db) return db; // already initialised
 
-  // sql-asm.js is async — must await
+  // sql-asm.js is async â€” must await
   const SQL = await sqlInit();
 
   if (fs.existsSync(DB_PATH)) {
@@ -28,7 +28,7 @@ async function initDb() {
     db = new SQL.Database();
   }
 
-  // ─── Tables ────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   db.exec(`
     CREATE TABLE IF NOT EXISTS admins (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -78,14 +78,14 @@ async function initDb() {
     );
   `);
 
-  // ─── Seed admin ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Seed admin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const adminCheck = db.exec("SELECT id FROM admins WHERE username='admin'");
   if (!adminCheck.length || !adminCheck[0].values.length) {
     const hashed = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10);
     db.run('INSERT INTO admins (username,password) VALUES (?,?)', ['admin', hashed]);
   }
 
-  // ─── Seed categories ────────────────────────────────────────────────────────
+  // â”€â”€â”€ Seed categories â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const cats = [
     ['Recipe Mixes','recipe-mixes'], ['Spice Powders','spice-powders'],
     ['Salts','salts'],               ['Whole Spices','whole-spices'],
@@ -97,7 +97,7 @@ async function initDb() {
     db.run('INSERT OR IGNORE INTO categories (name,slug) VALUES (?,?)', [name, slug])
   );
 
-  // ─── Seed products ──────────────────────────────────────────────────────────
+  // â”€â”€â”€ Seed products â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const getC = slug => {
     const r = db.exec(`SELECT id FROM categories WHERE slug='${slug}'`);
     return r.length && r[0].values.length ? r[0].values[0][0] : null;
@@ -107,10 +107,10 @@ async function initDb() {
   const aId = getC('salts');
 
   const products = [
-    ['Quorma Mix','quorma-mix','Authentic Quorma recipe mix with premium whole spices.',120,'/images/quorma-mix.jpg',rId,'Bestseller'],
-    ['Achar Gosht Masala','achar-gosht-masala','Tangy pickling spice blend for Achar Gosht.',120,'/images/achar-gosht.jpg',rId,null],
-    ['Kabuli Pulao Masala','kabuli-pulao-masala','Fragrant masala for the classic Kabuli Pulao.',120,'/images/kabuli-pulao.jpg',rId,null],
-    ['Bombay Biryani Masala','bombay-biryani-masala','Signature Bombay-style biryani spice blend.',120,'/images/bombay-biryani.jpg',rId,'Popular'],
+    ['Quorma Mix','quorma-mix','Authentic Quorma recipe mix with premium whole spices.',20,'/images/quorma-mix.jpg',rId,'Bestseller'],
+    ['Achar Gosht Masala','achar-gosht-masala','Tangy pickling spice blend for Achar Gosht.',20,'/images/achar-gosht.jpg',rId,null],
+    ['Kabuli Pulao Masala','kabuli-pulao-masala','Fragrant masala for the classic Kabuli Pulao.',20,'/images/kabuli-pulao.jpg',rId,null],
+    ['Bombay Biryani Masala','bombay-biryani-masala','Signature Bombay-style biryani spice blend.',20,'/images/bombay-biryani.jpg',rId,'Popular'],
     ['Tikka Boti Powder','tikka-boti-powder','Perfect marinade powder for grilled tikka and boti.',20,'/images/tikka-boti.jpg',sId,null],
     ['Fish Masala Powder','fish-masala-powder','Zesty blend balanced for fish and seafood.',20,'/images/fish-masala.jpg',sId,null],
     ['Peshawari Chatpatta Masala','peshawari-chatpatta-masala','Iconic tangy chaat masala from Peshawar.',20,'/images/chatpatta-masala.jpg',sId,'Regional Special'],
@@ -133,7 +133,7 @@ async function initDb() {
   );
 
   saveDb();
-  console.log('✅ DB ready at', DB_PATH);
+  console.log('âœ… DB ready at', DB_PATH);
   return db;
 }
 
@@ -169,3 +169,4 @@ function runSql(sql, params = []) {
 }
 
 module.exports = { initDb, queryAll, queryOne, runSql, saveDb, getDb: () => db };
+
