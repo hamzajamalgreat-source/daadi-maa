@@ -107,13 +107,13 @@ async function initDb() {
   const aId = getC('salts');
 
   const products = [
-    ['Quorma Mix','quorma-mix','Authentic Quorma recipe mix with premium whole spices.',20,'/images/quorma-mix.jpg',rId,'Bestseller'],
-    ['Achar Gosht Masala','achar-gosht-masala','Tangy pickling spice blend for Achar Gosht.',20,'/images/achar-gosht.jpg',rId,null],
-    ['Kabuli Pulao Masala','kabuli-pulao-masala','Fragrant masala for the classic Kabuli Pulao.',20,'/images/kabuli-pulao.jpg',rId,null],
-    ['Bombay Biryani Masala','bombay-biryani-masala','Signature Bombay-style biryani spice blend.',20,'/images/bombay-biryani.jpg',rId,'Popular'],
+    ['Quorma Mix','quorma-mix','Authentic Quorma recipe mix with premium whole spices.',30,'/images/quorma-mix.jpg',rId,'Bestseller'],
+    ['Achar Gosht Masala','achar-gosht-masala','Tangy pickling spice blend for Achar Gosht.',30,'/images/achar-gosht.jpg',rId,null],
+    ['Kabuli Pulao Masala','kabuli-pulao-masala','Fragrant masala for the classic Kabuli Pulao.',30,'/images/kabuli-pulao.jpg',rId,null],
+    ['Bombay Biryani Masala','bombay-biryani-masala','Signature Bombay-style biryani spice blend.',30,'/images/bombay-biryani.jpg',rId,'Popular'],
     ['Tikka Boti Powder','tikka-boti-powder','Perfect marinade powder for grilled tikka and boti.',20,'/images/tikka-boti.jpg',sId,null],
-    ['Fish Masala Powder','fish-masala-powder','Zesty blend balanced for fish and seafood.',20,'/images/fish-masala.jpg',sId,null],
-    ['Peshawari Chatpatta Masala','peshawari-chatpatta-masala','Iconic tangy chaat masala from Peshawar.',20,'/images/chatpatta-masala.jpg',sId,'Regional Special'],
+    ['Fish Masala Powder','fish-masala-powder','Zesty blend balanced for fish and seafood.',30,'/images/fish-masala.jpg',sId,null],
+    ['Peshawari Chatpatta Masala','peshawari-chatpatta-masala','Iconic tangy chaat masala from Peshawar.',10,'/images/chatpatta-masala.jpg',sId,'Regional Special'],
     ['Curry Powder','curry-powder','Versatile curry powder for everyday cooking.',20,'/images/curry-powder.jpg',sId,null],
     ['Garam Masala Powder','garam-masala-powder','Warming blend of whole spices ground to perfection.',20,'/images/garam-masala.jpg',sId,null],
     ['Black Pepper Powder','black-pepper-powder','Finely ground premium black pepper.',20,'/images/black-pepper.jpg',sId,null],
@@ -132,8 +132,10 @@ async function initDb() {
     )
   );
 
-  // Ensure all product prices are Rs. 20 (migration for existing DBs)
-  db.run("UPDATE products SET price = 20 WHERE price != 20");
+  // Price migration — update existing DB rows to correct prices
+  db.run("UPDATE products SET price = 30 WHERE slug IN ('quorma-mix','achar-gosht-masala','kabuli-pulao-masala','bombay-biryani-masala','fish-masala-powder')");
+  db.run("UPDATE products SET price = 10 WHERE slug = 'peshawari-chatpatta-masala'");
+  db.run("UPDATE products SET price = 20 WHERE slug NOT IN ('quorma-mix','achar-gosht-masala','kabuli-pulao-masala','bombay-biryani-masala','fish-masala-powder','peshawari-chatpatta-masala')");
   saveDb();
   console.log('âœ… DB ready at', DB_PATH);
   return db;
@@ -163,8 +165,10 @@ function queryOne(sql, params = []) {
 
 function runSql(sql, params = []) {
   db.run(sql, params);
-  // Ensure all product prices are Rs. 20 (migration for existing DBs)
-  db.run("UPDATE products SET price = 20 WHERE price != 20");
+  // Price migration — update existing DB rows to correct prices
+  db.run("UPDATE products SET price = 30 WHERE slug IN ('quorma-mix','achar-gosht-masala','kabuli-pulao-masala','bombay-biryani-masala','fish-masala-powder')");
+  db.run("UPDATE products SET price = 10 WHERE slug = 'peshawari-chatpatta-masala'");
+  db.run("UPDATE products SET price = 20 WHERE slug NOT IN ('quorma-mix','achar-gosht-masala','kabuli-pulao-masala','bombay-biryani-masala','fish-masala-powder','peshawari-chatpatta-masala')");
   saveDb();
   return {
     lastInsertRowid: db.exec('SELECT last_insert_rowid()')[0]?.values[0]?.[0],
@@ -173,5 +177,6 @@ function runSql(sql, params = []) {
 }
 
 module.exports = { initDb, queryAll, queryOne, runSql, saveDb, getDb: () => db };
+
 
 
