@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380">
+  <!-- Spice-pattern background -->
+  <rect width="300" height="380" fill="#F5F0F8"/>
+  <circle cx="30" cy="30" r="20" fill="#E8DDF0" opacity="0.5"/>
+  <circle cx="270" cy="50" r="15" fill="#E8DDF0" opacity="0.4"/>
+  <circle cx="50" cy="340" r="18" fill="#E8DDF0" opacity="0.4"/>
+  
+  <!-- Package bag shape — Purple (matching catalogue) -->
+  <path d="M65 60 Q60 50 80 45 L220 45 Q240 50 235 60 L245 300 Q248 330 220 340 L80 340 Q52 330 55 300 Z" fill="#6B3A9E"/>
+  <!-- Bag highlight -->
+  <path d="M75 60 Q72 52 88 48 L212 48 Q228 52 225 60 L234 295 Q236 322 212 332 L88 332 Q64 322 66 295 Z" fill="#7B4AAE"/>
+  <!-- Top seal -->
+  <rect x="65" y="42" width="170" height="20" rx="4" fill="#5A2A8E"/>
+  <rect x="75" y="46" width="150" height="12" rx="3" fill="#4A1A7E"/>
+  
+  <!-- Small Daadi logo on pack -->
+  <circle cx="150" cy="95" r="28" fill="white" opacity="0.95"/>
+  <circle cx="150" cy="95" r="26" fill="#8B1A1A"/>
+  <text x="150" y="92" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="bold" font-style="italic" fill="#FFD700">Daadi</text>
+  <text x="150" y="104" text-anchor="middle" font-family="Georgia,serif" font-size="8" font-style="italic" fill="#FFD700">maa</text>
+  
+  <!-- Urdu text area -->
+  <rect x="85" y="130" width="130" height="30" rx="4" fill="white" opacity="0.15"/>
+  <text x="150" y="150" text-anchor="middle" font-family="Arial" font-size="11" fill="white" opacity="0.8">قورمہ</text>
+  
+  <!-- QUORMA text -->
+  <text x="150" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="white" letter-spacing="2">QUORMA</text>
+  
+  <!-- RECIPE MIX -->
+  <rect x="95" y="202" width="110" height="20" rx="3" fill="#D4A843"/>
+  <text x="150" y="216" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2D1810" letter-spacing="1">RECIPE MIX</text>
+  
+  <!-- Food photo area -->
+  <ellipse cx="150" cy="278" rx="65" ry="55" fill="#3D2060" opacity="0.6"/>
+  <ellipse cx="150" cy="278" rx="58" ry="48" fill="#5B3580"/>
+  <!-- Simplified curry illustration -->
+  <ellipse cx="150" cy="285" rx="45" ry="35" fill="#8B4513"/>
+  <ellipse cx="150" cy="280" rx="40" ry="30" fill="#A0522D"/>
+  <circle cx="135" cy="272" r="8" fill="#8B0000"/>
+  <circle cx="162" cy="268" r="6" fill="#8B0000"/>
+  <circle cx="148" cy="260" r="5" fill="#8B0000"/>
+  <!-- Garnish -->
+  <path d="M120 265 Q150 250 180 265" fill="none" stroke="#228B22" stroke-width="2" opacity="0.7"/>
+  
+  <!-- 100% Organic badge -->
+  <circle cx="88" cy="315" r="22" fill="#2D8B3A"/>
+  <text x="88" y="310" text-anchor="middle" font-family="Arial" font-size="6" font-weight="bold" fill="white">100%</text>
+  <text x="88" y="319" text-anchor="middle" font-family="Arial" font-size="6" font-weight="bold" fill="white">ORGANIC</text>
+  <text x="88" y="328" text-anchor="middle" font-family="Arial" font-size="5" fill="white">PRODUCT</text>
+  
+  <!-- Premium badge -->
+  <circle cx="212" cy="195" r="18" fill="#D4A843"/>
+  <text x="212" y="191" text-anchor="middle" font-family="Arial" font-size="6" font-weight="bold" fill="#2D1810">PREMIUM</text>
+  <text x="212" y="200" text-anchor="middle" font-family="Arial" font-size="5" fill="#2D1810">QUALITY</text>
+</svg>

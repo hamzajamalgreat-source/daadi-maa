@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380">
+  <rect width="300" height="380" fill="#F0F8F0"/>
+  <path d="M65 60 Q60 50 80 45 L220 45 Q240 50 235 60 L245 300 Q248 330 220 340 L80 340 Q52 330 55 300 Z" fill="#1A7A2A"/>
+  <path d="M75 60 Q72 52 88 48 L212 48 Q228 52 225 60 L234 295 Q236 322 212 332 L88 332 Q64 322 66 295 Z" fill="#228B35"/>
+  <rect x="65" y="42" width="170" height="20" rx="4" fill="#155A1E"/>
+  <circle cx="150" cy="95" r="28" fill="white" opacity="0.95"/>
+  <circle cx="150" cy="95" r="26" fill="#8B1A1A"/>
+  <text x="150" y="92" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="bold" font-style="italic" fill="#FFD700">Daadi</text>
+  <text x="150" y="104" text-anchor="middle" font-family="Georgia,serif" font-size="8" font-style="italic" fill="#FFD700">maa</text>
+  <text x="150" y="150" text-anchor="middle" font-family="Arial" font-size="11" fill="white" opacity="0.8">اچار گوشت</text>
+  <text x="150" y="190" text-anchor="middle" font-family="Arial" font-size="22" font-weight="900" fill="white" letter-spacing="1">Achar Gosht</text>
+  <rect x="95" y="197" width="110" height="20" rx="3" fill="#D4A843"/>
+  <text x="150" y="211" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#2D1810">MASALA MIX</text>
+  <ellipse cx="150" cy="278" rx="58" ry="48" fill="#0D5A18"/>
+  <ellipse cx="150" cy="285" rx="45" ry="35" fill="#8B4513"/>
+  <ellipse cx="150" cy="278" rx="38" ry="28" fill="#A0522D"/>
+  <circle cx="138" cy="272" r="7" fill="#8B0000"/>
+  <circle cx="160" cy="268" r="5" fill="#8B0000"/>
+  <path d="M118 268 Q150 252 182 268" fill="none" stroke="#228B22" stroke-width="2" opacity="0.8"/>
+  <circle cx="88" cy="315" r="22" fill="#1A6B28"/>
+  <text x="88" y="310" text-anchor="middle" font-family="Arial" font-size="6" font-weight="bold" fill="white">100%</text>
+  <text x="88" y="319" text-anchor="middle" font-family="Arial" font-size="6" font-weight="bold" fill="white">ORGANIC</text>
+</svg>
