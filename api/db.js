@@ -132,6 +132,8 @@ async function initDb() {
     )
   );
 
+  // Ensure all product prices are Rs. 20 (migration for existing DBs)
+  db.run("UPDATE products SET price = 20 WHERE price != 20");
   saveDb();
   console.log('âœ… DB ready at', DB_PATH);
   return db;
@@ -161,6 +163,8 @@ function queryOne(sql, params = []) {
 
 function runSql(sql, params = []) {
   db.run(sql, params);
+  // Ensure all product prices are Rs. 20 (migration for existing DBs)
+  db.run("UPDATE products SET price = 20 WHERE price != 20");
   saveDb();
   return {
     lastInsertRowid: db.exec('SELECT last_insert_rowid()')[0]?.values[0]?.[0],
@@ -169,4 +173,5 @@ function runSql(sql, params = []) {
 }
 
 module.exports = { initDb, queryAll, queryOne, runSql, saveDb, getDb: () => db };
+
 
