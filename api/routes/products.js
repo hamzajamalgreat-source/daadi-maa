@@ -1,10 +1,10 @@
-const express = require('express');
+﻿const express = require('express');
 const { queryAll, queryOne, runSql } = require('../db');
 const { requireAuth } = require('./auth');
 
 const router = express.Router();
 
-// GET /api/products — list all products (optionally filter by category)
+// GET /api/products â€” list all products (optionally filter by category)
 router.get('/', (req, res) => {
   const { category, search } = req.query;
 
@@ -32,13 +32,13 @@ router.get('/', (req, res) => {
   res.json(products);
 });
 
-// GET /api/products/categories — list all categories
+// GET /api/products/categories â€” list all categories
 router.get('/categories', (req, res) => {
   const categories = queryAll('SELECT * FROM categories ORDER BY id');
   res.json(categories);
 });
 
-// POST /api/products/categories — admin creates a new category
+// POST /api/products/categories â€” admin creates a new category
 router.post('/categories', requireAuth, (req, res) => {
   const { name } = req.body;
   if (!name || !name.trim()) {
@@ -54,7 +54,7 @@ router.post('/categories', requireAuth, (req, res) => {
   res.status(201).json(created);
 });
 
-// GET /api/products/:slug — single product by slug
+// GET /api/products/:slug â€” single product by slug
 router.get('/:slug', (req, res) => {
   const product = queryOne(`
     SELECT p.*, c.name AS category_name, c.slug AS category_slug
@@ -67,9 +67,9 @@ router.get('/:slug', (req, res) => {
   res.json(product);
 });
 
-// ─── Admin Routes (protected) ─────────────────────────────────────────────────
+// â”€â”€â”€ Admin Routes (protected) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// POST /api/products — create product
+// POST /api/products â€” create product
 router.post('/', requireAuth, (req, res) => {
   const { name, slug, description, price, image_url, category_id, badge, in_stock } = req.body;
 
@@ -103,7 +103,7 @@ router.post('/', requireAuth, (req, res) => {
   }
 });
 
-// PUT /api/products/:id — update product
+// PUT /api/products/:id â€” update product
 router.put('/:id', requireAuth, (req, res) => {
   const { name, description, price, image_url, category_id, badge, in_stock } = req.body;
   const { id } = req.params;
@@ -137,7 +137,7 @@ router.put('/:id', requireAuth, (req, res) => {
   res.json(updated);
 });
 
-// DELETE /api/products/:id — delete product
+// DELETE /api/products/:id â€” delete product
 router.delete('/:id', requireAuth, (req, res) => {
   const existing = queryOne('SELECT * FROM products WHERE id = ?', [Number(req.params.id)]);
   if (!existing) return res.status(404).json({ error: 'Product not found' });
@@ -147,3 +147,4 @@ router.delete('/:id', requireAuth, (req, res) => {
 });
 
 module.exports = router;
+

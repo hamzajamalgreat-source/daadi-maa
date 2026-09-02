@@ -1,16 +1,27 @@
-const express = require('express');
+﻿const express = require('express');
 const { queryAll, queryOne, runSql } = require('../db');
 const { requireAuth } = require('./auth');
 
 const router = express.Router();
 
-// ─── POST /api/orders — customer places an order ──────────────────────────────
+// â”€â”€â”€ POST /api/orders â€” customer places an order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 router.post('/', (req, res) => {
   const { customer_name, customer_phone, customer_address, customer_email, items, notes } = req.body;
 
   if (!customer_name?.trim() || !customer_phone?.trim() || !customer_address?.trim()) {
     return res.status(400).json({ error: 'Name, phone, and address are required' });
   }
+  // Length limits to prevent abuse
+  if (customer_name.trim().length > 100)
+    return res.status(400).json({ error: 'Name is too long (max 100 characters).' });
+  if (customer_phone.trim().length > 20)
+    return res.status(400).json({ error: 'Phone number is too long.' });
+  if (customer_address.trim().length > 500)
+    return res.status(400).json({ error: 'Address is too long (max 500 characters).' });
+  if (notes && notes.trim().length > 500)
+    return res.status(400).json({ error: 'Notes are too long (max 500 characters).' });
+  if (!Array.isArray(items) || items.length > 50)
+    return res.status(400).json({ error: 'Too many items in order.' });
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ error: 'Order must contain at least one item' });
   }
@@ -47,7 +58,7 @@ router.post('/', (req, res) => {
   total = Math.round(total * 100) / 100;
 
   try {
-    // ── Atomic transaction: order + all items or nothing ──────────────────
+    // â”€â”€ Atomic transaction: order + all items or nothing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const orderResult = runSql(
       `INSERT INTO orders
          (customer_name, customer_phone, customer_address, customer_email, total_amount, notes)
@@ -75,15 +86,15 @@ router.post('/', (req, res) => {
     const order = queryOne('SELECT * FROM orders WHERE id = ?', [orderId]);
     const orderItems = queryAll('SELECT * FROM order_items WHERE order_id = ?', [orderId]);
 
-    console.log(`✅ New order #${orderId} — ${customer_name} — Rs. ${total}`);
+    console.log(`âœ… New order #${orderId} â€” ${customer_name} â€” Rs. ${total}`);
     res.status(201).json({ ...order, items: orderItems });
   } catch (err) {
-    console.error('❌ Order creation failed:', err.message);
+    console.error('âŒ Order creation failed:', err.message);
     res.status(500).json({ error: 'Failed to place order. Please try again.' });
   }
 });
 
-// ─── GET /api/orders/stats/summary — admin dashboard stats ───────────────────
+// â”€â”€â”€ GET /api/orders/stats/summary â€” admin dashboard stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MUST be before /:id to avoid route conflict
 router.get('/stats/summary', requireAuth, (req, res) => {
   try {
@@ -149,7 +160,7 @@ router.get('/stats/summary', requireAuth, (req, res) => {
   }
 });
 
-// ─── GET /api/orders/:id — customer order lookup ─────────────────────────────
+// â”€â”€â”€ GET /api/orders/:id â€” customer order lookup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid order ID' });
@@ -161,7 +172,7 @@ router.get('/:id', (req, res) => {
   res.json({ ...order, items });
 });
 
-// ─── GET /api/orders — admin: list all orders ────────────────────────────────
+// â”€â”€â”€ GET /api/orders â€” admin: list all orders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 router.get('/', requireAuth, (req, res) => {
   try {
     const { status, page = 1, limit = 20, search } = req.query;
@@ -199,7 +210,7 @@ router.get('/', requireAuth, (req, res) => {
   }
 });
 
-// ─── PATCH /api/orders/:id/status — admin: update status ─────────────────────
+// â”€â”€â”€ PATCH /api/orders/:id/status â€” admin: update status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 router.patch('/:id/status', requireAuth, (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid order ID' });
@@ -223,7 +234,7 @@ router.patch('/:id/status', requireAuth, (req, res) => {
   res.json({ ...updated, items });
 });
 
-// ─── DELETE /api/orders/:id — admin: delete order ────────────────────────────
+// â”€â”€â”€ DELETE /api/orders/:id â€” admin: delete order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 router.delete('/:id', requireAuth, (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid order ID' });
@@ -237,3 +248,4 @@ router.delete('/:id', requireAuth, (req, res) => {
 });
 
 module.exports = router;
+

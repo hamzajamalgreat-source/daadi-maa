@@ -1,13 +1,21 @@
-const express = require('express');
+﻿const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { queryOne } = require('../db');
+const rateLimit = require('../middleware/rateLimit');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'daadi_maa_secret_key_2024';
 
+// Rate limit: max 10 login attempts per 15 minutes per IP
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: 'Too many login attempts. Please wait 15 minutes before trying again.',
+});
+
 // POST /api/auth/login
-router.post('/login', (req, res) => {
+router.post('/login', loginLimiter, (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -74,3 +82,5 @@ function requireAuth(req, res, next) {
 }
 
 module.exports = { router, requireAuth };
+
+
