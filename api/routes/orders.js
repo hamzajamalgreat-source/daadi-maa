@@ -161,7 +161,8 @@ router.get('/stats/summary', requireAuth, (req, res) => {
 });
 
 // â”€â”€â”€ GET /api/orders/:id â€” customer order lookup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-router.get('/:id', (req, res) => {
+// FIX H1: requireAuth added — order PII (name/phone/address) was publicly accessible by guessing integer IDs
+router.get('/:id', requireAuth, (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid order ID' });
 

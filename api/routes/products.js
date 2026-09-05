@@ -72,79 +72,12 @@ router.get('/:slug', (req, res) => {
 // POST /api/products â€” create product
 router.post('/', requireAuth, (req, res) => {
   const { name, slug, description, price, image_url, category_id, badge, in_stock } = req.body;
-
-  if (!name || !price) {
-    return res.status(400).json({ error: 'Name and price are required' });
-  }
-
-  const autoSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-
-  try {
-    const existing = queryOne('SELECT id FROM products WHERE slug = ?', [autoSlug]);
-    if (existing) {
-      return res.status(409).json({ error: 'A product with that slug already exists' });
-    }
-
-    const result = runSql(
-      'INSERT INTO products (name, slug, description, price, image_url, category_id, badge, in_stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [name, autoSlug, description || '', price, image_url || '', category_id || null, badge || null, in_stock ?? 1]
-    );
-
-    // Return with category_name joined so UI shows category immediately
-    const product = queryOne(
-      `SELECT p.*, c.name AS category_name, c.slug AS category_slug
-       FROM products p LEFT JOIN categories c ON p.category_id = c.id
-       WHERE p.id = ?`,
-      [result.lastInsertRowid]
-    );
-    res.status(201).json(product);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// PUT /api/products/:id â€” update product
-router.put('/:id', requireAuth, (req, res) => {
-  const { name, description, price, image_url, category_id, badge, in_stock } = req.body;
-  const { id } = req.params;
-
-  const existing = queryOne('SELECT * FROM products WHERE id = ?', [Number(id)]);
-  if (!existing) return res.status(404).json({ error: 'Product not found' });
-
-  runSql(
-    `UPDATE products
-     SET name = ?, description = ?, price = ?, image_url = ?,
-         category_id = ?, badge = ?, in_stock = ?
-     WHERE id = ?`,
-    [
-      name ?? existing.name,
-      description ?? existing.description,
-      price ?? existing.price,
-      image_url ?? existing.image_url,
-      category_id ?? existing.category_id,
-      badge ?? existing.badge,
-      in_stock ?? existing.in_stock,
-      Number(id),
-    ]
-  );
-
-  const updated = queryOne(
-    `SELECT p.*, c.name AS category_name, c.slug AS category_slug
-     FROM products p LEFT JOIN categories c ON p.category_id = c.id
-     WHERE p.id = ?`,
-    [Number(id)]
-  );
-  res.json(updated);
-});
-
-// DELETE /api/products/:id â€” delete product
-router.delete('/:id', requireAuth, (req, res) => {
-  const existing = queryOne('SELECT * FROM products WHERE id = ?', [Number(req.params.id)]);
-  if (!existing) return res.status(404).json({ error: 'Product not found' });
-
-  runSql('DELETE FROM products WHERE id = ?', [Number(req.params.id)]);
-  res.json({ message: 'Product deleted successfully' });
-});
-
-module.exports = router;
-
+  // FIX M3: thorough input validation — name, price, lengths, types
+  const trimmedName = (name || ').toString().trim();
+  if (!trimmedName) return res.status(400).json({ error: 'Product name is required.' });
+  if (trimmedName.length > 120) return res.status(400).json({ error: 'Product name too long (max 120 chars).' });
+  const parsedPrice = parseFloat(price);
+  if (!price || isNaN(parsedPrice) || parsedPrice <= 0) return res.status(400).json({ error: 'A valid price greater than 0 is required.' });
+  if (parsedPrice > 999999) return res.status(400).json({ error: 'Price exceeds maximum allowed value.' });
+  if (description && description.toString().length > 1000) return res.status(400).json({ error: 'Description too long (max 1000 chars).' });
+  if (badge && badge.toString().trim().length > 50) return res.status(400).json({ error: 'Badge too long (max 50 chars).' });

@@ -6,6 +6,8 @@ const rateLimit = require('../middleware/rateLimit');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'daadi_maa_secret_key_2024';
+// SECURITY: Set JWT_SECRET env var on Vercel. The fallback is not safe for production.
+if (!process.env.JWT_SECRET) console.warn('⚠️  JWT_SECRET env var not set. Tokens can be forged. Set it on Vercel.');
 
 // Rate limit: max 10 login attempts per 15 minutes per IP
 const loginLimiter = rateLimit({
@@ -48,8 +50,8 @@ router.post('/change-password', requireAuth, (req, res) => {
   if (!currentPassword || !newPassword) {
     return res.status(400).json({ error: 'Both current and new passwords are required' });
   }
-  if (newPassword.length < 6) {
-    return res.status(400).json({ error: 'New password must be at least 6 characters' });
+  if (newPassword.length < 8) {
+    return res.status(400).json({ error: 'New password must be at least 8 characters' });
   }
 
   const admin = queryOne('SELECT * FROM admins WHERE id = ?', [req.admin.id]);
@@ -82,5 +84,6 @@ function requireAuth(req, res, next) {
 }
 
 module.exports = { router, requireAuth };
+
 
 
