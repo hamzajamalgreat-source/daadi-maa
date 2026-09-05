@@ -162,6 +162,31 @@ router.get('/stats/summary', requireAuth, (req, res) => {
 
 // â”€â”€â”€ GET /api/orders/:id â€” customer order lookup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // FIX H1: requireAuth added — order PII (name/phone/address) was publicly accessible by guessing integer IDs
+
+// GET /api/orders/track?phone=03XXXXXXXXX
+// Public endpoint — customers look up their own orders by phone number
+router.get('/track', (req, res) => {
+  const phone = (req.query.phone || '').trim();
+  if (phone.length < 7) {
+    return res.status(400).json({ error: 'Please enter your phone number.' });
+  }
+  // Strip dashes/spaces for flexible matching
+  const norm = phone.replace(/[-\\s]/g, '');
+  const orders = queryAll(
+    `SELECT o.id, o.status, o.total_amount, o.created_at,
+     o.customer_name, o.customer_phone, o.customer_address
+     FROM orders o
+     WHERE replace(replace(o.customer_phone, '-', ''), ' ', '') LIKE ?
+     ORDER BY o.created_at DESC LIMIT 5`,
+    ['%' + norm + '%']
+  );
+  const result = orders.map(o => ({
+    ...o,
+    items: queryAll('SELECT product_name, quantity, unit_price FROM order_items WHERE order_id = ?', [o.id])
+  }));
+  res.json(result);
+});
+
 router.get('/:id', requireAuth, (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid order ID' });
@@ -249,4 +274,5 @@ router.delete('/:id', requireAuth, (req, res) => {
 });
 
 module.exports = router;
+
 
