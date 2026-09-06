@@ -1,4 +1,4 @@
-﻿// sql-asm.js — pure JavaScript SQLite, no native deps, no .wasm file.
+// sql-asm.js — pure JavaScript SQLite, no native deps, no .wasm file.
 const sqlInit = require('sql.js/dist/sql-asm.js');
 const bcrypt  = require('bcryptjs');
 const path    = require('path');
@@ -22,8 +22,36 @@ async function initDb() {
     CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL, slug TEXT UNIQUE NOT NULL);
     CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, slug TEXT UNIQUE NOT NULL, description TEXT, price REAL NOT NULL, image_url TEXT, category_id INTEGER, in_stock INTEGER DEFAULT 1, badge TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (category_id) REFERENCES categories(id));
     CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT, customer_name TEXT NOT NULL, customer_phone TEXT NOT NULL, customer_address TEXT NOT NULL, customer_email TEXT, total_amount REAL NOT NULL, status TEXT DEFAULT 'pending', notes TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP);
-    CREATE TABLE IF NOT EXISTS order_items (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL, product_id INTEGER NOT NULL, product_name TEXT NOT NULL, quantity INTEGER NOT NULL, unit_price REAL NOT NULL, FOREIGN KEY (order_id) REFERENCES orders(id), FOREIGN KEY (product_id) REFERENCES products(id));
+    CREATE TABLE IF NOT EXISTS order_items (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL, product_id INTEGER NOT NULL, product_name TEXT NOT NULL, quantity INTEGER NOT NULL, unit_price REAL NOT NULL, FOREIGN KEY (order_id) REFERENCES orders(id), FOREIGN KEY (product_id) REFERENCES products(id)    CREATE TABLE IF NOT EXISTS feedback (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      customer_name TEXT NOT NULL,
+      customer_phone TEXT,
+      product_id INTEGER,
+      product_name TEXT,
+      rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+      comment TEXT NOT NULL,
+      status TEXT DEFAULT 'pending',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (product_id) REFERENCES products(id)
+    );
+    CREATE TABLE IF NOT EXISTS messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      customer_name TEXT NOT NULL,
+      customer_phone TEXT,
+      customer_email TEXT,
+      subject TEXT NOT NULL,
+      message TEXT NOT NULL,
+      status TEXT DEFAULT 'unread',
+      replied_by TEXT,
+      reply TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    ););
   `);
+  
+  // Role migration — add role column to admins if it doesn't exist
+  try { db.exec("ALTER TABLE admins ADD COLUMN role TEXT DEFAULT 'admin'"); } catch { /* column already exists */ }
+  // Ensure admin has admin role
+  db.run("UPDATE admins SET role = 'admin' WHERE username = 'admin' AND (role IS NULL OR role = '')");
   // SECURITY: Set ADMIN_PASSWORD env var on Vercel — do not rely on fallback in production.
   if (!process.env.ADMIN_PASSWORD) console.warn('⚠️  ADMIN_PASSWORD env var not set. Using insecure default.');
   const adminCheck = db.exec("SELECT id FROM admins WHERE username='admin'");
