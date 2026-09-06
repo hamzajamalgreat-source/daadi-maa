@@ -1,4 +1,4 @@
-// sql-asm.js — pure JavaScript SQLite, no native deps, no .wasm file.
+﻿// sql-asm.js Ã¢â‚¬â€ pure JavaScript SQLite, no native deps, no .wasm file.
 const sqlInit = require('sql.js/dist/sql-asm.js');
 const bcrypt  = require('bcryptjs');
 const path    = require('path');
@@ -22,7 +22,8 @@ async function initDb() {
     CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL, slug TEXT UNIQUE NOT NULL);
     CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, slug TEXT UNIQUE NOT NULL, description TEXT, price REAL NOT NULL, image_url TEXT, category_id INTEGER, in_stock INTEGER DEFAULT 1, badge TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (category_id) REFERENCES categories(id));
     CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT, customer_name TEXT NOT NULL, customer_phone TEXT NOT NULL, customer_address TEXT NOT NULL, customer_email TEXT, total_amount REAL NOT NULL, status TEXT DEFAULT 'pending', notes TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP);
-    CREATE TABLE IF NOT EXISTS order_items (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL, product_id INTEGER NOT NULL, product_name TEXT NOT NULL, quantity INTEGER NOT NULL, unit_price REAL NOT NULL, FOREIGN KEY (order_id) REFERENCES orders(id), FOREIGN KEY (product_id) REFERENCES products(id)    CREATE TABLE IF NOT EXISTS feedback (
+    CREATE TABLE IF NOT EXISTS order_items (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL, product_id INTEGER NOT NULL, product_name TEXT NOT NULL, quantity INTEGER NOT NULL, unit_price REAL NOT NULL, FOREIGN KEY (order_id) REFERENCES orders(id), FOREIGN KEY (product_id) REFERENCES products(id));
+    CREATE TABLE IF NOT EXISTS feedback (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       customer_name TEXT NOT NULL,
       customer_phone TEXT,
@@ -48,12 +49,12 @@ async function initDb() {
     ););
   `);
   
-  // Role migration — add role column to admins if it doesn't exist
+    );
   try { db.exec("ALTER TABLE admins ADD COLUMN role TEXT DEFAULT 'admin'"); } catch { /* column already exists */ }
   // Ensure admin has admin role
   db.run("UPDATE admins SET role = 'admin' WHERE username = 'admin' AND (role IS NULL OR role = '')");
-  // SECURITY: Set ADMIN_PASSWORD env var on Vercel — do not rely on fallback in production.
-  if (!process.env.ADMIN_PASSWORD) console.warn('⚠️  ADMIN_PASSWORD env var not set. Using insecure default.');
+  // SECURITY: Set ADMIN_PASSWORD env var on Vercel Ã¢â‚¬â€ do not rely on fallback in production.
+  if (!process.env.ADMIN_PASSWORD) console.warn('Ã¢Å¡Â Ã¯Â¸Â  ADMIN_PASSWORD env var not set. Using insecure default.');
   const adminCheck = db.exec("SELECT id FROM admins WHERE username='admin'");
   if (!adminCheck.length || !adminCheck[0].values.length) {
     const hashed = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10);
@@ -65,7 +66,7 @@ async function initDb() {
     ['Blended Masalas','blended-masalas'],['Curry Bases','curry-bases'],['Gift Packs','gift-packs'],
   ];
   cats.forEach(([name, slug]) => db.run('INSERT OR IGNORE INTO categories (name,slug) VALUES (?,?)', [name, slug]));
-  // FIX M4: was string interpolation `WHERE slug='${slug}'` — now parameterized
+  // FIX M4: was string interpolation `WHERE slug='${slug}'` Ã¢â‚¬â€ now parameterized
   const getC = slug => {
     const stmt = db.prepare('SELECT id FROM categories WHERE slug = ?');
     stmt.bind([slug]);
@@ -94,13 +95,13 @@ async function initDb() {
     ['Himalayan Pink Salt','himalayan-pink-salt','Naturally mined Himalayan pink salt.',20,'/images/himalayan-pink-salt.jpg',aId,'Premium'],
   ];
   products.forEach(p => db.run('INSERT OR IGNORE INTO products (name,slug,description,price,image_url,category_id,badge) VALUES (?,?,?,?,?,?,?)', p));
-  // FIX C1: Price migration only runs here in initDb() — NOT in runSql().
+  // FIX C1: Price migration only runs here in initDb() Ã¢â‚¬â€ NOT in runSql().
   // Previously it ran on every runSql() call, silently reverting any admin price edit.
   db.run("UPDATE products SET price = 30 WHERE slug IN ('quorma-mix','achar-gosht-masala','kabuli-pulao-masala','bombay-biryani-masala','fish-masala-powder')");
   db.run("UPDATE products SET price = 10 WHERE slug = 'peshawari-chatpatta-masala'");
   db.run("UPDATE products SET price = 20 WHERE slug NOT IN ('quorma-mix','achar-gosht-masala','kabuli-pulao-masala','bombay-biryani-masala','fish-masala-powder','peshawari-chatpatta-masala')");
   saveDb();
-  console.log('✅ DB ready at', DB_PATH);
+  console.log('Ã¢Å“â€¦ DB ready at', DB_PATH);
   return db;
 }
 
@@ -121,7 +122,7 @@ function queryAll(sql, params = []) {
 
 function queryOne(sql, params = []) { return queryAll(sql, params)[0] || null; }
 
-// FIX C1: Price migration removed — no longer runs on every write.
+// FIX C1: Price migration removed Ã¢â‚¬â€ no longer runs on every write.
 // Admin price changes now persist correctly.
 function runSql(sql, params = []) {
   db.run(sql, params);
